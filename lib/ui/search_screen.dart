@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurantcity2/data/model/restaurant_search.dart';
 import 'package:restaurantcity2/data/model/restaurants.dart';
-import 'package:restaurantcity2/provider/home_provider.dart';
+import 'package:restaurantcity2/provider/search_provider.dart';
 import 'package:restaurantcity2/ui/detail_screen.dart';
-import 'package:restaurantcity2/ui/search_screen.dart';
 import 'package:restaurantcity2/utils/result_state.dart';
 
-class HomeScreen extends StatelessWidget {
-  static const routeName = '/home_screen';
-  const HomeScreen({Key? key}) : super(key: key);
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({Key? key}) : super(key: key);
+
+  static const routeName = '/restaurant_search_page';
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,55 +32,79 @@ class HomeScreen extends StatelessWidget {
         toolbarHeight: 75,
         backgroundColor: Colors.blue,
         title: const Text('Restaurant App'),
-        actions: [IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, SearchScreen.routeName);
-          },
-          icon: const Icon(Icons.search),
-        ),],
       ),
-      body: const MainMobile()
+      body: Consumer<SearchProvider>(
+        builder: (context, state, _) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    hintText: 'Search Restaurant',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                  ),
+                  onChanged: (String text) {
+                    setState(() {
+                      state.fetchRestaurantSearch(text);
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: _buildList(context),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
-}
 
-class MainMobile extends StatelessWidget {
-  const MainMobile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<HomeProvider>(
+  _buildList(BuildContext context) {
+    return Consumer<SearchProvider>(
       builder: (context, state, _) {
-        ResultState<Restaurants> result = state.state;
+        ResultState<RestaurantSearch> result = state.state;
         switch (result.status) {
           case StatusState.loading:
             return const Center(
               child: CircularProgressIndicator(),
             );
-          case StatusState.noData:
-            return Center(
-              child: Text('Empty Data : ${result.message}'),
-            );
           case StatusState.hasData:
             return ListView.builder(
               itemCount: result.data!.restaurants.length,
-              itemBuilder: (context, index) =>
-                  _buildItem(context, result.data!.restaurants[index]),
+              itemBuilder: (context, index) {
+                var restaurant = result.data!.restaurants[index];
+                return _buildRestoItem(context, restaurant);
+              },
+            );
+          case StatusState.noData:
+            return const Center(
+              child: Text('Restaurant not found'),
+            );
+          case StatusState.textFieldEmpty:
+            return const Center(
+              child: Text('Input name restaurant'),
             );
           case StatusState.error:
             return Center(
-              child: Text(result.message!),
+              child: Text('Error : ${result.message}'),
             );
           default:
             return const Center(
-              child: Text('Error'),
+              child: Text(''),
             );
         }
       },
     );
   }
 
-  Widget _buildItem(BuildContext context, RestaurantsElement restaurantsElement) {
+  _buildRestoItem(BuildContext context, RestaurantsElement restaurantsElement) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: GestureDetector(

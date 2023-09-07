@@ -56,7 +56,7 @@ class _DetailMainMobileState extends State<DetailMainMobile> {
   @override
   void initState() {
     Future.microtask(() {
-      RestaurantDetailProvider provider = Provider.of<RestaurantDetailProvider>(
+      DetailProvider provider = Provider.of<DetailProvider>(
         context,
         listen: false,
       );
@@ -67,7 +67,7 @@ class _DetailMainMobileState extends State<DetailMainMobile> {
 
   @override
   Widget build(BuildContext context) {
-      return Consumer<RestaurantDetailProvider>(
+      return Consumer<DetailProvider>(
         builder: (context, state, _) {
           ResultState<RestaurantDetail> result = state.state;
           switch (result.status) {

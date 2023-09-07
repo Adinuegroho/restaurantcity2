@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:restaurantcity2/data/model/restaurant_detail.dart';
 
 class Restaurants {

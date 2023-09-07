@@ -34,13 +34,13 @@ class HomeProvider extends ChangeNotifier {
         notifyListeners();
         return _state;
       }
-    } on TimeoutException catch (e) {
-      _state = ResultState(status: StatusState.error, message: 'Internet kamu lagi bermasalah coba periksa lagi!', data: null);
+    } on TimeoutException {
+      _state = ResultState(status: StatusState.error, message: 'No Internet, Try Again!', data: null);
       notifyListeners();
       return _state;
-    } on SocketException catch (e) {
+    } on SocketException {
       _state = ResultState(
-          status: StatusState.error, message: 'Internet kamu lagi bermasalah coba periksa lagi!', data: null);
+          status: StatusState.error, message: 'No Internet, Try Again!', data: null);
       notifyListeners();
       return _state;
     } catch (e) {

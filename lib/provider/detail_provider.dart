@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:restaurantcity2/data/model/restaurant_detail.dart';
 import 'package:restaurantcity2/utils/result_state.dart';
 
-class RestaurantDetailProvider extends ChangeNotifier {
+class DetailProvider extends ChangeNotifier {
   final ApiService apiService;
 
-  RestaurantDetailProvider({required this.apiService});
+  DetailProvider({required this.apiService});
 
   ResultState<RestaurantDetail> _state =
   ResultState(status: StatusState.loading, message: null, data: null);
@@ -30,23 +30,23 @@ class RestaurantDetailProvider extends ChangeNotifier {
         notifyListeners();
         return _state;
       }
-    } on TimeoutException catch (e) {
+    } on TimeoutException {
       _state = ResultState(
           status: StatusState.error,
-          message: 'Internet kamu lagi bermasalah coba periksa lagi!',
+          message: 'No Internet, Try Again!',
           data: null);
       notifyListeners();
       return _state;
-    } on SocketException catch (e) {
+    } on SocketException {
       _state = ResultState(
           status: StatusState.error,
-          message: 'Internet kamu lagi bermasalah coba periksa lagi!',
+          message: 'No Internet, Try Again!',
           data: null);
       notifyListeners();
       return _state;
-    } catch (e) {
+    } catch (error) {
       _state = ResultState(
-          status: StatusState.error, message: 'Error --> $e', data: null);
+          status: StatusState.error, message: 'Error --> $error', data: null);
       notifyListeners();
       return _state;
     }
