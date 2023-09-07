@@ -64,7 +64,7 @@ class MainMobile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, DetailScreen.routeName);
+          Navigator.pushNamed(context, DetailScreen.routeName, arguments: restaurantsElement.id);
         },
         child: SizedBox(
           height: 100,

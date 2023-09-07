@@ -97,8 +97,8 @@ class _DetailMainMobileState extends State<DetailMainMobile> {
                                   bottomLeft: Radius.circular(14.0),
                                   bottomRight: Radius.circular(14.0),
                                 ),
-                                child: Image.network(
-                                    restaurant.pictureId
+                                child: Image.network("https://restaurant-api.dicoding.dev/images/large/${restaurant.pictureId}",
+                                  fit: BoxFit.cover,
                                 ),
                               )),
                         ),
